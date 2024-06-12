@@ -9,10 +9,13 @@ foreach (var item in mySeq)
     Console.Write($"{item} ");
 }
 
-var Result = Sorting.CountingSort(mySeq);
+// var Result = Sorting.QuickSort(mySeq);
+Sorting.BubbleSort(mySeq);
 Console.WriteLine();
 
-foreach (var item in Result)
+foreach (var item in mySeq)
 {
     Console.Write($"{item} ");
 }
+
+Console.WriteLine();

@@ -2,86 +2,89 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Win32.SafeHandles;
 
 namespace Algorithms;
 
 public static class Sorting
 {
-    static void Merge(List<int> leftSeq, List<int> rightSeq, List<int> Seq)
+    static void Merge(List<int> leftSequence, List<int> rightSequence, List<int> sequence)
     {
         int i = 0,
             j = 0,
             k = 0;
-        while (i < leftSeq.Count && j < rightSeq.Count)
+
+        while (i < leftSequence.Count && j < rightSequence.Count)
         {
-            if (leftSeq[i] < rightSeq[j])
+            if (leftSequence[i] < rightSequence[j])
             {
-                Seq[k] = leftSeq[i];
+                sequence[k] = leftSequence[i];
                 i++;
             }
             else
             {
-                Seq[k] = rightSeq[j];
+                sequence[k] = rightSequence[j];
                 j++;
             }
             k++;
         }
 
-        while (i < leftSeq.Count)
+        while (i < leftSequence.Count)
         {
-            Seq[k] = leftSeq[i];
+            sequence[k] = leftSequence[i];
             i++;
             k++;
         }
 
-        while (j < rightSeq.Count)
+        while (j < rightSequence.Count)
         {
-            Seq[k] = rightSeq[j];
+            sequence[k] = rightSequence[j];
             j++;
             k++;
         }
     }
 
-    public static void MergeSort(List<int> Seq)
+    public static void MergeSort(List<int> sequence)
     {
-        if (Seq.Count > 1)
+        if (sequence.Count > 1)
         {
-            int mid = Seq.Count / 2;
+            int middle = sequence.Count / 2;
+            List<int> left = sequence[0..middle];
+            List<int> right = sequence[middle..sequence.Count];
 
-            List<int> Left = Seq[0..mid];
-            List<int> Right = Seq[mid..Seq.Count];
+            MergeSort(left);
+            MergeSort(right);
 
-            MergeSort(Left);
-            MergeSort(Right);
-
-            Merge(Left, Right, Seq);
+            Merge(left, right, sequence);
         }
     }
 
-    public static List<int> QuickSort(List<int> Seq)
+    public static List<int> QuickSort(List<int> sequence)
     {
-        if (Seq.Count <= 1)
+        if (sequence.Count <= 1)
         {
-            return Seq;
+            return sequence;
         }
         else
         {
-            int pivot = Seq[0];
+            int pivot = sequence[0];
             List<int> left = [];
             List<int> right = [];
-            for (int i = 1; i < Seq.Count; i++)
+
+            for (int i = 1; i < sequence.Count; i++)
             {
-                if (Seq[i] >= pivot)
+                if (sequence[i] >= pivot)
                 {
-                    right.Add(Seq[i]);
+                    right.Add(sequence[i]);
                 }
                 else
                 {
-                    left.Add(Seq[i]);
+                    left.Add(sequence[i]);
                 }
             }
 
             List<int> result = [];
+
             result.AddRange(QuickSort(left));
             result.Add(pivot);
             result.AddRange(QuickSort(right));
@@ -90,46 +93,13 @@ public static class Sorting
         }
     }
 
-    public static void InsertionSort(List<int> Seq)
+    public static List<int> CountingSort(List<int> sequence)
     {
-        for (int i = 0; i < Seq.Count; i++)
-        {
-            int j = i;
-
-            while (j > 0 && Seq[j - 1] > Seq[j])
-            {
-                (Seq[j - 1], Seq[j]) = (Seq[j], Seq[j - 1]);
-                j--;
-            }
-        }
-    }
-
-    public static void SelectionSort(List<int> Seq)
-    {
-        for (int i = 0; i < Seq.Count; i++)
-        {
-            int minIndex = i;
-            for (int j = i + 1; j < Seq.Count; j++)
-            {
-                if (Seq[j] < Seq[minIndex])
-                {
-                    minIndex = j;
-                }
-            }
-
-            int minValue = Seq[minIndex];
-            Seq.RemoveAt(minIndex);
-            Seq.Insert(i, minValue);
-        }
-    }
-
-    public static List<int> CountingSort(List<int> Seq)
-    {
-        int highest = Seq.Max() + 1;
+        int highest = sequence.Max() + 1;
         int[] helperArray = new int[highest];
         List<int> sortedList = [];
 
-        foreach (var item in Seq)
+        foreach (int item in sequence)
         {
             helperArray[item]++;
         }
@@ -145,15 +115,49 @@ public static class Sorting
         return sortedList;
     }
 
-    public static void BubbleSort(List<int> Seq)
+    public static void InsertionSort(List<int> sequence)
     {
-        for (int i = 0; i < Seq.Count - 1; i++)
+        for (int i = 0; i < sequence.Count; i++)
         {
-            for (int j = 0; j < Seq.Count - i - 1; j++)
+            int j = i;
+
+            while (j > 0 && sequence[j - 1] > sequence[j])
             {
-                if (Seq[j] > Seq[j + 1])
+                (sequence[j - 1], sequence[j]) = (sequence[j], sequence[j - 1]);
+                j--;
+            }
+        }
+    }
+
+    public static void SelectionSort(List<int> sequence)
+    {
+        for (int i = 0; i < sequence.Count; i++)
+        {
+            int minIndex = i;
+
+            for (int j = i + 1; j < sequence.Count; j++)
+            {
+                if (sequence[j] < sequence[minIndex])
                 {
-                    (Seq[j], Seq[j + 1]) = (Seq[j + 1], Seq[j]);
+                    minIndex = j;
+                }
+            }
+
+            int minValue = sequence[minIndex];
+            sequence.RemoveAt(minIndex);
+            sequence.Insert(i, minValue);
+        }
+    }
+
+    public static void BubbleSort(List<int> sequence)
+    {
+        for (int i = 0; i < sequence.Count - 1; i++)
+        {
+            for (int j = 0; j < sequence.Count - i - 1; j++)
+            {
+                if (sequence[j] > sequence[j + 1])
+                {
+                    (sequence[j], sequence[j + 1]) = (sequence[j + 1], sequence[j]);
                 }
             }
         }

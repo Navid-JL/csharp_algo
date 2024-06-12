@@ -7,41 +7,29 @@ namespace Algorithms;
 
 public static class Searching
 {
-    public static int BinarySearch(List<int> Seq, int key)
+    public static int BinarySearch(List<int> sequence, int key)
     {
         int low = 0,
-            high = Seq.Count - 1;
+            high = sequence.Count - 1;
 
         while (low <= high)
         {
-            int mid = (high + low) / 2;
+            int middle = (high + low) / 2;
 
-            if (key == Seq[mid])
+            if (key == sequence[middle])
             {
-                return mid;
+                return middle;
             }
-            else if (key > Seq[mid])
+            else if (key > sequence[middle])
             {
-                low = mid + 1;
+                low = middle + 1;
             }
             else
             {
-                high = mid - 1;
+                high = middle - 1;
             }
         }
 
-        return -1;
-    }
-
-    public static int LinearSearch(List<int> Seq, int key)
-    {
-        for (int i = 0; i < Seq.Count; i++)
-        {
-            if (key == Seq[i])
-            {
-                return i;
-            }
-        }
         return -1;
     }
 }
